@@ -1,8 +1,10 @@
+import Layout from '@/components/Layout'
+
 const App = () => {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Opti Album</h1>
-    </div>
+    <Layout>
+      <h1 className="text-2xl font-bold text-center">Opti Album</h1>
+    </Layout>
   )
 }
 
