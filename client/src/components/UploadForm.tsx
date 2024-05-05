@@ -1,3 +1,6 @@
+import axios from 'axios'
+import { useState } from 'react'
+
 const styles = {
   label:
     'w-full h-[225px] flex flex-col justify-center items-center bg-slate-100 rounded-sm cursor-pointer border-2 border-dashed border-indigo-300',
@@ -8,13 +11,45 @@ const styles = {
 }
 
 const UploadForm = () => {
+  const [file, setFile] = useState<File | null>(null)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    console.log(files)
+
+    if (!files) return
+
+    setFile(files[0])
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const result = await axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    console.log(result)
+  }
+
   return (
-    <form className="flex flex-col my-3">
+    <form className="flex flex-col my-3" onSubmit={handleSubmit}>
       <label htmlFor="upload" className={styles.label}>
         <div className={styles.choose}>Choose File</div>
         <div className={styles.drop}>or Drop File</div>
       </label>
-      <input id="upload" type="file" className="hidden" />
+      <input
+        id="upload"
+        type="file"
+        className="hidden"
+        onChange={handleChange}
+      />
       <button type="submit" className={styles.button}>
         Upload
       </button>
