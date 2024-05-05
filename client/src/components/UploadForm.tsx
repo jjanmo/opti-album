@@ -1,24 +1,14 @@
+import { useEffect, useRef, useState } from 'react'
 import { usePostUploadImageMutation } from '@/queries/useUploadMutation'
-import { useState } from 'react'
-
-const styles = {
-  label:
-    'w-full h-[225px] flex flex-col justify-center items-center bg-slate-100 rounded-sm cursor-pointer border-2 border-dashed border-indigo-300',
-  choose: 'py-3 px-6 mb-3 text-white bg-indigo-500 font-semibold rounded-md',
-  drop: 'text-gray-500 font-semibold text-sm',
-  button:
-    'w-full py-2 mt-2 bg-indigo-600 text-white rounded-sm hover:bg-indigo-500 transition-colors duration-300 ease-in-out',
-}
 
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
+  const thumbnailRef = useRef<HTMLImageElement>(null)
 
   const uploadImageMutation = usePostUploadImageMutation()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    console.log(files)
-
     if (!files) return
 
     setFile(files[0])
@@ -26,7 +16,6 @@ const UploadForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     if (!file) return
 
     const formData = new FormData()
@@ -40,11 +29,31 @@ const UploadForm = () => {
     uploadImageMutation.mutate(payload)
   }
 
+  useEffect(() => {
+    if (file && thumbnailRef.current) {
+      thumbnailRef.current.src = URL.createObjectURL(file)
+    }
+  }, [file])
+
   return (
     <form className="flex flex-col my-3" onSubmit={handleSubmit}>
       <label htmlFor="upload" className={styles.label}>
-        <div className={styles.choose}>Choose File</div>
-        <div className={styles.drop}>or Drop File</div>
+        {file ? (
+          <div className="w-full h-full relative">
+            <span className={styles.fileName}>{file.name}</span>
+            <div className={styles.overlay} />
+            <img
+              ref={thumbnailRef}
+              className={styles.thumbnail}
+              alt="thumbnail"
+            />
+          </div>
+        ) : (
+          <>
+            <div className={styles.choose}>Choose File</div>
+            <div className={styles.drop}>or Drop File</div>
+          </>
+        )}
       </label>
       <input
         id="upload"
@@ -60,3 +69,16 @@ const UploadForm = () => {
 }
 
 export default UploadForm
+
+const styles = {
+  label:
+    'w-full h-[225px] flex flex-col justify-center items-center bg-slate-100 rounded-sm cursor-pointer border-2 border-dashed border-indigo-300',
+  fileName:
+    'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 py-2 px-4 text-sm text-center text-white bg-slate-500 opacity-70 rounded-md',
+  overlay: 'absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.2)]',
+  thumbnail: 'w-full h-full object-contain',
+  choose: 'py-3 px-6 mb-3 text-white bg-indigo-500 font-semibold rounded-md',
+  drop: 'text-gray-500 font-semibold text-sm',
+  button:
+    'w-full py-2 mt-2 bg-indigo-600 text-white rounded-sm hover:bg-indigo-500 transition-colors duration-300 ease-in-out',
+}
