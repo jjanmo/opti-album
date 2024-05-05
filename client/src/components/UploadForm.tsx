@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { usePostUploadImageMutation } from '@/queries/useUploadMutation'
 import { useState } from 'react'
 
 const styles = {
@@ -12,6 +12,8 @@ const styles = {
 
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
+
+  const uploadImageMutation = usePostUploadImageMutation()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -30,12 +32,12 @@ const UploadForm = () => {
     const formData = new FormData()
     formData.append('image', file)
 
-    const result = await axios.post('/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    console.log(result)
+    const payload = {
+      url: '/upload',
+      data: formData,
+      options: { headers: { 'Content-Type': 'multipart/form-data' } },
+    }
+    uploadImageMutation.mutate(payload)
   }
 
   return (
