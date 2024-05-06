@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePostUploadImageMutation } from '@/queries/useUploadMutation'
+import {
+  PostImagePayload,
+  usePostUploadImageMutation,
+} from '@/queries/useUploadMutation'
+import { AxiosProgressEvent } from 'axios'
 
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -21,10 +25,15 @@ const UploadForm = () => {
     const formData = new FormData()
     formData.append('image', file)
 
-    const payload = {
+    const payload: PostImagePayload = {
       url: '/upload',
       data: formData,
-      options: { headers: { 'Content-Type': 'multipart/form-data' } },
+      options: {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (e: AxiosProgressEvent) => {
+          console.log('@@@', e.total, e.loaded)
+        },
+      },
     }
     uploadImageMutation.mutate(payload)
   }

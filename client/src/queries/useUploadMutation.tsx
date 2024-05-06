@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosRequestConfig } from 'axios'
 
-interface PostImagePayload {
+export interface PostImagePayload {
   url: string
   data: FormData
   options?: AxiosRequestConfig
