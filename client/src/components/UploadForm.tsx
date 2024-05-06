@@ -8,8 +8,15 @@ import { AxiosProgressEvent } from 'axios'
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
   const thumbnailRef = useRef<HTMLImageElement>(null)
+  const [percent, setPercent] = useState(0)
 
-  const uploadImageMutation = usePostUploadImageMutation()
+  const {
+    mutate: uploadImageMutate,
+    isPending,
+    status,
+  } = usePostUploadImageMutation()
+
+  console.log(isPending, status)
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -31,11 +38,12 @@ const UploadForm = () => {
       options: {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (e: AxiosProgressEvent) => {
-          console.log('@@@', e.total, e.loaded)
+          if (!e.total) setPercent(0)
+          else setPercent(Math.floor((e.loaded / e.total) * 100))
         },
       },
     }
-    uploadImageMutation.mutate(payload)
+    uploadImageMutate(payload)
   }
 
   useEffect(() => {
@@ -73,6 +81,7 @@ const UploadForm = () => {
       <button type="submit" className={styles.submitButton}>
         Upload
       </button>
+      {isPending && <div>{`${percent}%`}</div>}
     </form>
   )
 }
