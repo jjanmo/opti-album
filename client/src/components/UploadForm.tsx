@@ -56,6 +56,7 @@ const UploadForm = () => {
   useEffect(() => {
     if (isSuccess) {
       setFile(null)
+      URL.revokeObjectURL(thumbnailRef.current?.src || '')
       if (thumbnailRef.current) thumbnailRef.current.src = ''
     }
   }, [isSuccess])
@@ -83,6 +84,7 @@ const UploadForm = () => {
       <input
         id="upload"
         type="file"
+        accept="image/*"
         className="hidden"
         disabled={isPending}
         onChange={handleChange}
