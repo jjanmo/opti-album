@@ -5,18 +5,14 @@ import {
 } from '@/queries/useUploadMutation'
 import { AxiosProgressEvent } from 'axios'
 
+const PROGRESS_BAR_WIDTH = 400
+
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
   const thumbnailRef = useRef<HTMLImageElement>(null)
-  const [percent, setPercent] = useState(0)
+  const [barWidth, setBarWidth] = useState(0)
 
-  const {
-    mutate: uploadImageMutate,
-    isPending,
-    status,
-  } = usePostUploadImageMutation()
-
-  console.log(isPending, status)
+  const { mutate: uploadImageMutate, isPending } = usePostUploadImageMutation()
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -38,8 +34,9 @@ const UploadForm = () => {
       options: {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (e: AxiosProgressEvent) => {
-          if (!e.total) setPercent(0)
-          else setPercent(Math.floor((e.loaded / e.total) * 100))
+          if (!e.total) setBarWidth(0)
+          else
+            setBarWidth(Math.floor((e.loaded / e.total) * PROGRESS_BAR_WIDTH))
         },
       },
     }
@@ -76,12 +73,19 @@ const UploadForm = () => {
         id="upload"
         type="file"
         className="hidden"
+        disabled={isPending}
         onChange={handleChange}
       />
-      <button type="submit" className={styles.submitButton}>
-        Upload
-      </button>
-      {isPending && <div>{`${percent}%`}</div>}
+      {isPending ? (
+        <div className={styles.progressBar}>
+          <div className={styles.filled} style={{ width: `${barWidth}px` }} />
+          <div className={styles.filledText}>Uploading...</div>
+        </div>
+      ) : (
+        <button type="submit" className={styles.submitButton}>
+          Upload
+        </button>
+      )}
     </form>
   )
 }
@@ -99,4 +103,8 @@ const styles = {
   drop: 'text-gray-500 font-semibold text-sm',
   submitButton:
     'w-full py-2 mt-2 bg-indigo-600 text-white rounded-sm hover:bg-indigo-500 transition-colors duration-300 ease-in-out',
+  progressBar: 'relative w-full py-2 mt-2 bg-indigo-100',
+  filled:
+    'absolute top-0 left-0 h-full bg-indigo-500 transition-all duration-300 ease-in-out',
+  filledText: 'relative w-full text-center z-10 text-white',
 }
