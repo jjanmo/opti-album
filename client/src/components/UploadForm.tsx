@@ -56,6 +56,7 @@ const UploadForm = () => {
   useEffect(() => {
     if (isSuccess) {
       setFile(null)
+      URL.revokeObjectURL(thumbnailRef.current?.src || '')
       if (thumbnailRef.current) thumbnailRef.current.src = ''
     }
   }, [isSuccess])
