@@ -12,7 +12,11 @@ const UploadForm = () => {
   const thumbnailRef = useRef<HTMLImageElement>(null)
   const [barWidth, setBarWidth] = useState(0)
 
-  const { mutate: uploadImageMutate, isPending } = usePostUploadImageMutation()
+  const {
+    mutate: uploadImageMutate,
+    isPending,
+    isSuccess,
+  } = usePostUploadImageMutation()
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -48,6 +52,13 @@ const UploadForm = () => {
       thumbnailRef.current.src = URL.createObjectURL(file)
     }
   }, [file])
+
+  useEffect(() => {
+    if (isSuccess) {
+      setFile(null)
+      if (thumbnailRef.current) thumbnailRef.current.src = ''
+    }
+  }, [isSuccess])
 
   return (
     <form className="flex flex-col my-3" onSubmit={handleSubmit}>
