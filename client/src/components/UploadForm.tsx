@@ -84,6 +84,7 @@ const UploadForm = () => {
       <input
         id="upload"
         type="file"
+        accept="image/*"
         className="hidden"
         disabled={isPending}
         onChange={handleChange}
