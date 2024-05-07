@@ -9,8 +9,8 @@ const PROGRESS_BAR_WIDTH = 400
 
 const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null)
-  const thumbnailRef = useRef<HTMLImageElement>(null)
   const [barWidth, setBarWidth] = useState(0)
+  const thumbnailRef = useRef<HTMLImageElement>(null)
 
   const {
     mutate: uploadImageMutate,
@@ -23,6 +23,8 @@ const UploadForm = () => {
     if (!files) return
 
     setFile(files[0])
+
+    e.target.value = ''
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,8 +58,9 @@ const UploadForm = () => {
   useEffect(() => {
     if (isSuccess) {
       setFile(null)
-      URL.revokeObjectURL(thumbnailRef.current?.src || '')
-      if (thumbnailRef.current) thumbnailRef.current.src = ''
+      setBarWidth(0)
+      if (thumbnailRef.current)
+        URL.revokeObjectURL(thumbnailRef.current?.src || '')
     }
   }, [isSuccess])
 
