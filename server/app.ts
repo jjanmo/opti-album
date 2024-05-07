@@ -1,14 +1,20 @@
 import express from 'express'
 import uploadRouter from './routes/upload'
+import { connectDB } from './db'
 import 'dotenv/config'
 
 const app = express()
 const port = process.env.PORT || 4000
 
 app.use('/static/uploads', express.static('uploads'))
-
 app.use('/', uploadRouter)
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
+const init = async () => {
+  await connectDB()
+
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+  })
+}
+
+init()
