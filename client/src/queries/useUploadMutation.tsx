@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosRequestConfig } from 'axios'
-import { toast } from 'react-toastify'
 
 export interface PostImagePayload {
   url: string
@@ -16,12 +15,5 @@ export const postImage = (payload: PostImagePayload) => {
 export const usePostUploadImageMutation = () => {
   return useMutation({
     mutationFn: postImage,
-    onSuccess: () => {
-      toast.success('Image upload successful 🎉')
-      // TODO : add invalidateQueries to fetch images
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
   })
 }
