@@ -1,9 +1,16 @@
 import mongoose from 'mongoose'
 const { Schema } = mongoose
 
-export const ImageSchema = new Schema(
+export interface ImageSchema {
+  key: string
+  originalName: string
+  size: number
+  type: string
+}
+
+export const imageSchema = new Schema<ImageSchema>(
   {
-    id: { type: String, required: true },
+    key: { type: String, required: true },
     originalName: { type: String, required: true },
     size: { type: Number, required: true },
     type: { type: String, required: true },
