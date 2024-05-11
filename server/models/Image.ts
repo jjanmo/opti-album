@@ -17,3 +17,6 @@ export const imageSchema = new Schema<ImageSchema>(
   },
   { timestamps: true }
 )
+
+const ImageModel = mongoose.model('Image', imageSchema, 'images')
+export default ImageModel
