@@ -5,8 +5,12 @@ import { imageSchema, ImageSchema } from '../models/Image'
 
 const router = express.Router()
 
+router.get('/images', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'success', message: 'Images route' })
+})
+
 router.post(
-  '/upload',
+  '/images',
   iMulter.single('image'),
   async (req: Request, res: Response) => {
     const file = req.file
