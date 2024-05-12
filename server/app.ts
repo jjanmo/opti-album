@@ -1,5 +1,5 @@
 import express from 'express'
-import uploadRouter from './routes/upload'
+import imageRouter from './routes/images'
 import { connectDB } from './db'
 import 'dotenv/config'
 
@@ -7,7 +7,7 @@ const app = express()
 const port = process.env.PORT || 4000
 
 app.use('/static/uploads', express.static('uploads'))
-app.use('/', uploadRouter)
+app.use('/', imageRouter)
 
 const init = async () => {
   await connectDB()
