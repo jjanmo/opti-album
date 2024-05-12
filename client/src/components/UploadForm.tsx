@@ -35,7 +35,6 @@ const UploadForm = () => {
     setLoading(true)
 
     const payload: PostImagePayload = {
-      url: '/images',
       data: formData,
       options: {
         headers: { 'Content-Type': 'multipart/form-data' },
