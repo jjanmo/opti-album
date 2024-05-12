@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosRequestConfig } from 'axios'
 
 export interface PostImagePayload {
@@ -12,7 +12,11 @@ export const postImage = (payload: PostImagePayload) => {
 }
 
 export const usePostUploadImageMutation = () => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: postImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['images'] })
+    },
   })
 }
