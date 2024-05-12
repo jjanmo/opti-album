@@ -6,7 +6,7 @@ import 'dotenv/config'
 const app = express()
 const port = process.env.PORT || 4000
 
-app.use('/static/uploads', express.static('uploads'))
+app.use('/static/images', express.static('uploads'))
 app.use('/', imageRouter)
 
 const init = async () => {

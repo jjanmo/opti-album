@@ -4,7 +4,6 @@ import {
   usePostUploadImageMutation,
 } from '@/queries/useUploadMutation'
 import { AxiosProgressEvent } from 'axios'
-import { toast } from 'react-toastify'
 
 const PROGRESS_BAR_WIDTH = 400
 
@@ -35,7 +34,6 @@ const UploadForm = () => {
     setLoading(true)
 
     const payload: PostImagePayload = {
-      url: '/images',
       data: formData,
       options: {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -58,12 +56,7 @@ const UploadForm = () => {
             }
             resolve()
           }, 200)
-        }).then(() => {
-          toast.success('Image upload successful 🎉')
         })
-      },
-      onError: (error) => {
-        toast.error(error.message)
       },
     })
   }
