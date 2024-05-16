@@ -9,6 +9,9 @@ const port = process.env.PORT || 4000
 
 app.use('/static/images', express.static('uploads'))
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 app.use('/', imageRouter)
 app.use('/auth', authRouter)
 
