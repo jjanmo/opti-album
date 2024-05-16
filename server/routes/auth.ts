@@ -4,6 +4,17 @@ import UserModel from '../models/User'
 const router = express.Router()
 
 router.post('/login', async (req, res) => {
+  const { nickname, password, id } = req.body
+
+  const result = await UserModel.findOne({ nickname, _id: id })
+
+  if (result?.password !== password) {
+    return res.status(400).json({
+      status: 'failure',
+      message: 'Invalid password',
+    })
+  }
+
   res.status(201).json({
     status: 'success',
   })
