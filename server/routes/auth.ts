@@ -25,6 +25,14 @@ router.post('/signup', async (req, res) => {
   const { nickname, password, email } = req.body
 
   try {
+    const result = await UserModel.findOne({ nickname })
+    if (result) {
+      return res.status(400).json({
+        status: 'failure',
+        message: 'User already exists',
+      })
+    }
+
     bcrypt.hash(password, 10, async (err, hash) => {
       const user = new UserModel({
         nickname,
