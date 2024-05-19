@@ -6,7 +6,7 @@ import { SALT_ROUNDS } from '../constants'
 const router = express.Router()
 
 router.post('/login', async (req, res) => {
-  const { nickname, password, id } = req.body
+  const { nickname, password } = req.body
 
   try {
     const user = await UserModel.findOne({ nickname })
@@ -45,7 +45,7 @@ router.post('/signup', async (req, res) => {
       })
     }
 
-    bcrypt.hash(password, 10, async (err, hash) => {
+    bcrypt.hash(password, SALT_ROUNDS, async (_, hash) => {
       const user = new UserModel({
         nickname,
         password: hash,
