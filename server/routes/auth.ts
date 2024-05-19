@@ -1,24 +1,36 @@
 import express from 'express'
 import UserModel from '../models/User'
 import bcrypt from 'bcrypt'
+import { SALT_ROUNDS } from '../constants'
 
 const router = express.Router()
 
 router.post('/login', async (req, res) => {
   const { nickname, password, id } = req.body
 
-  const result = await UserModel.findOne({ nickname, _id: id })
+  try {
+    const user = await UserModel.findOne({ nickname })
+    if (!user) {
+      return res.status(400).json({
+        status: 'failure',
+        message: 'User does not exist',
+      })
+    }
 
-  if (result?.password !== password) {
-    return res.status(400).json({
-      status: 'failure',
-      message: 'Invalid password',
+    const result = await bcrypt.compare(password, user.password)
+    if (!result) {
+      return res.status(400).json({
+        status: 'failure',
+        message: 'Invalid password',
+      })
+    }
+
+    return res.status(201).json({
+      status: 'success',
     })
+  } catch (e) {
+    console.log(e)
   }
-
-  res.status(201).json({
-    status: 'success',
-  })
 })
 
 router.post('/signup', async (req, res) => {
