@@ -12,7 +12,7 @@ app.use('/static/images', express.static('uploads'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/', imageRouter)
+app.use('/images', imageRouter)
 app.use('/auth', authRouter)
 
 const init = async () => {
