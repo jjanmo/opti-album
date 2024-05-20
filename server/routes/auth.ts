@@ -50,11 +50,17 @@ router.post('/signup', async (req, res) => {
         nickname,
         password: hash,
         email,
+        sessions: [
+          {
+            createdAt: new Date(),
+          },
+        ],
       })
       await user.save()
 
       return res.status(201).json({
         status: 'success',
+        sessionId: user.sessions[0]._id,
       })
     })
   } catch (e) {
