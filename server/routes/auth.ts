@@ -2,6 +2,7 @@ import express from 'express'
 import UserModel from '../models/User'
 import bcrypt from 'bcrypt'
 import { SALT_ROUNDS } from '../constants'
+import mongoose from 'mongoose'
 
 const router = express.Router()
 
@@ -75,7 +76,30 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-router.post('/logout', (req, res) => {
+router.post('/logout', async (req, res) => {
+  const sessionId = req.headers['session-id']
+
+  const isValid = mongoose.isValidObjectId(sessionId)
+  if (!isValid) {
+    return res.status(400).json({
+      status: 'failure',
+      message: 'Invalid session id',
+    })
+  }
+
+  const user = await UserModel.findOne({ 'sessions._id': sessionId })
+  if (!user) {
+    return res.status(400).json({
+      status: 'failure',
+      message: 'Invalid session id',
+    })
+  }
+
+  await UserModel.updateOne(
+    { nickname: user.nickname },
+    { $pull: { sessions: { _id: sessionId } } }
+  )
+
   res.status(201).json({
     status: 'success',
   })
