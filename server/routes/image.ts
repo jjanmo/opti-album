@@ -4,17 +4,21 @@ import ImageModel from '../models/Image'
 
 const router = express.Router()
 
-router.get('/images', async (req: Request, res: Response) => {
-  const result = await ImageModel.find()
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const result = await ImageModel.find()
 
-  res.status(200).json({
-    status: 'success',
-    data: result,
-  })
+    res.status(200).json({
+      status: 'success',
+      data: result,
+    })
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 router.post(
-  '/images',
+  '/',
   iMulter.single('image'),
   async (req: Request, res: Response) => {
     const file = req.file
