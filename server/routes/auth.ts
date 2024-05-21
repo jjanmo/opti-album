@@ -25,8 +25,15 @@ router.post('/login', async (req, res) => {
       })
     }
 
+    const updated = await UserModel.findOneAndUpdate(
+      { nickname },
+      { sessions: [...user.sessions, { createdAt: new Date() }] },
+      { new: true }
+    )
+
     return res.status(201).json({
       status: 'success',
+      data: updated,
     })
   } catch (e) {
     console.log(e)
